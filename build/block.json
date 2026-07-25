@@ -1,0 +1,112 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "next/custom-field-link-button-block",
+  "version": "0.2.0",
+  "title": "カスタムフィールドリンクボタン",
+  "category": "widgets",
+  "icon": "admin-links",
+  "description": "投稿のカスタムフィールド（投稿メタ）の値をリンク先とするボタンを表示します。",
+  "keywords": [
+    "button",
+    "custom field",
+    "link",
+    "meta",
+    "url",
+    "カスタムフィールド"
+  ],
+  "usesContext": [
+    "postId",
+    "postType"
+  ],
+  "attributes": {
+    "metaKey": {
+      "type": "string",
+      "default": ""
+    },
+    "openInNewTab": {
+      "type": "boolean",
+      "default": false
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "width": {
+      "type": "number"
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "gradient": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": false,
+    "color": {
+      "text": true,
+      "background": true,
+      "gradients": true,
+      "__experimentalDefaultControls": {
+        "background": true,
+        "text": true
+      }
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalFontStyle": true,
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "spacing": {
+      "padding": [
+        "horizontal",
+        "vertical"
+      ],
+      "__experimentalDefaultControls": {
+        "padding": true
+      }
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "radius": true,
+        "style": true,
+        "width": true
+      }
+    },
+    "shadow": true
+  },
+  "styles": [
+    {
+      "name": "fill",
+      "label": "塗りつぶし",
+      "isDefault": true
+    },
+    {
+      "name": "outline",
+      "label": "輪郭"
+    }
+  ],
+  "textdomain": "next-custom-field-link-button-block",
+  "editorScript": "file:./index.js",
+  "editorStyle": "wp-block-button-editor",
+  "style": "wp-block-button",
+  "render": "file:./render.php"
+}

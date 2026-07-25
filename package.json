@@ -1,0 +1,19 @@
+{
+	"name": "next-custom-field-link-button-block",
+	"version": "0.2.0",
+	"description": "投稿のカスタムフィールドの値をリンク先とするボタンブロックを追加します。",
+	"author": "NExT-Season",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"build": "wp-scripts build --webpack-copy-php",
+		"start": "wp-scripts start --webpack-copy-php",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"plugin-zip": "wp-scripts plugin-zip"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.15.0"
+	}
+}
