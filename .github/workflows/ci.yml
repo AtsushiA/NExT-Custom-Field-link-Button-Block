@@ -27,8 +27,10 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          # MYSQL_DATABASE を指定すると DB が既存扱いとなり install-wp-tests.sh の
-          # read -p で対話入力を求められて CI が止まる。第6引数 true で DB 作成をスキップする。
+          # MYSQL_DATABASE はあえて指定しない。指定すると DB が既存扱いになり、
+          # install-wp-tests.sh 側で作成をスキップしない限り read -p の対話入力で
+          # CI が止まる。DB を未作成のままにして install-wp-tests.sh 自身に
+          # mysqladmin create させれば、対話プロンプトを経由せず素直に作成される。
         ports:
           - 3306:3306
         options: >-
@@ -58,9 +60,10 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction
       - name: Install WordPress test suite
-        # 引数: <db-name> <db-user> <db-pass> <db-host> <wp-version> <skip-db-create>
-        # 第6引数 true: MySQL サービスが用意した DB を再利用し DB 作成をスキップ
-        run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 ${{ matrix.wp }} true
+        # 引数: <db-name> <db-user> <db-pass> <db-host> <wp-version> [<skip-db-create>]
+        # 第6引数は省略（false 相当）。DB は未作成の状態なので、
+        # install-wp-tests.sh が対話プロンプトなしでそのまま作成する。
+        run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 ${{ matrix.wp }}
       - name: Run PHPUnit
         # CI でも Integration 用 bootstrap を明示指定する。
         # WP_TESTS_DIR は install-wp-tests.sh が /tmp/wordpress-tests-lib を想定するので明示。
