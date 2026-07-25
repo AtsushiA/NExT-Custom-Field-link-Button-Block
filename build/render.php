@@ -22,13 +22,13 @@ $label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
 $width           = isset( $attributes['width'] ) ? absint( $attributes['width'] ) : 0;
 
 // クエリーループの投稿テンプレート内で使われた場合はブロックコンテキストの postId を優先する.
-$post_id = isset( $block->context['postId'] ) ? absint( $block->context['postId'] ) : get_the_ID();
+$target_post_id = isset( $block->context['postId'] ) ? absint( $block->context['postId'] ) : get_the_ID();
 
-if ( '' === $meta_key || ! $post_id ) {
+if ( '' === $meta_key || ! $target_post_id ) {
 	return;
 }
 
-$url = get_post_meta( $post_id, $meta_key, true );
+$url = get_post_meta( $target_post_id, $meta_key, true );
 
 if ( ! is_string( $url ) || '' === $url ) {
 	return;

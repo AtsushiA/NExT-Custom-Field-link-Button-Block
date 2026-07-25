@@ -56,6 +56,7 @@
 
 ```bash
 npm install
+composer install
 npm run build
 ```
 
@@ -65,18 +66,67 @@ npm run build
 npm start
 ```
 
+### ローカル環境（wp-env）
+
+```bash
+npm run env:start   # wp-env start
+npm run env:stop     # wp-env stop
+```
+
+| 環境 | URL |
+|------|-----|
+| 開発 | http://localhost:8888 |
+| テスト | http://localhost:8889 |
+
+### コーディング規約チェック（phpcs）
+
+```bash
+composer run phpcs
+composer run phpcbf  # 自動修正
+```
+
+`git commit` 時に husky + lint-staged 経由でステージされた PHP ファイルに対して自動実行されます。
+
+### PHPUnit テスト
+
+```bash
+# Unit テスト（WordPress 非依存、ローカルでそのまま実行可能）
+vendor/bin/phpunit --testsuite unit
+
+# Integration テスト（wp-env 上で実行）
+npx wp-env run tests-cli --env-cwd=wp-content/plugins/NExT-Custom-Field-link-button-Block vendor/bin/phpunit --testsuite integration --bootstrap=tests/phpunit/bootstrap.php
+```
+
+### E2E テスト（Playwright）
+
+```bash
+npx wp-env start
+npx playwright install chromium
+npm run test:e2e
+```
+
 ### ファイル構成
 
 ```
 NExT-Custom-Field-link-button-Block/
 ├── next-custom-field-link-button-block.php  # メインプラグインファイル
 ├── src/
-│   ├── block.json   # ブロック定義（属性・supports）
-│   ├── index.js     # ブロック登録
-│   ├── edit.js       # エディター画面
-│   └── render.php    # フロントエンド／エディタープレビューのサーバーサイドレンダリング
-├── build/            # ビルド生成物
-├── readme.txt         # WordPress.org 形式の説明（日本語）
+│   ├── block.json    # ブロック定義（属性・supports）
+│   ├── index.js       # ブロック登録
+│   ├── edit.js        # エディター画面
+│   └── render.php     # フロントエンド／エディタープレビューのサーバーサイドレンダリング
+├── build/             # ビルド生成物
+├── tests/
+│   ├── phpunit/        # PHPUnit（Unit・Integration）
+│   └── e2e/            # Playwright E2E テスト
+├── bin/install-wp-tests.sh
+├── .wp-env.json
+├── phpcs.xml.dist
+├── phpunit.xml.dist
+├── playwright.config.ts
+├── .github/workflows/  # CI（phpcs/phpunit/plugin-check/e2e）・Release
+├── readme.txt          # WordPress.org 形式の説明（日本語）
+├── composer.json
 └── package.json
 ```
 
