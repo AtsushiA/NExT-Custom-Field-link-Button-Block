@@ -99,4 +99,52 @@ class RenderTest extends WP_UnitTestCase {
 
 		$this->assertSame( '', trim( $html ) );
 	}
+
+	/**
+	 * アンダースコア始まりの保護対象メタキーが指定された場合、値が存在しても出力されないことを確認する.
+	 *
+	 * @return void
+	 */
+	public function test_render_outputs_nothing_for_protected_meta_key(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, '_secret_internal_value', 'https://example.com/secret' );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$html = render_block(
+			array(
+				'blockName'    => 'next/custom-field-link-button-block',
+				'attrs'        => array( 'metaKey' => '_secret_internal_value' ),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertSame( '', trim( $html ) );
+	}
+
+	/**
+	 * metaKey / label に文字列以外の値が渡されても致命的エラーにならないことを確認する.
+	 *
+	 * @return void
+	 */
+	public function test_render_does_not_fatal_on_non_string_attributes(): void {
+		$post_id = self::factory()->post->create();
+		$this->go_to( get_permalink( $post_id ) );
+
+		$html = render_block(
+			array(
+				'blockName'    => 'next/custom-field-link-button-block',
+				'attrs'        => array(
+					'metaKey' => array( 'unexpected' => 'array' ),
+					'label'   => array( 'unexpected' => 'array' ),
+				),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertSame( '', trim( $html ) );
+	}
 }

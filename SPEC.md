@@ -49,6 +49,13 @@
 
 `metaKey` が未指定、または対象投稿の該当メタ値が空・存在しない場合、フロントエンドでは何も出力しない（壊れたリンクを表示しないため）。編集画面では `metaKey` 未入力時に警告 Notice を表示する。
 
+### セキュリティ
+
+- **保護対象メタキーの除外**: `metaKey` が `is_protected_meta( $meta_key, 'post' )` で保護対象（`_` 始まり等）と判定される場合、フロントエンドには何も出力しない。他プラグイン・コアが内部利用するメタ値を、ブロック経由で意図せず一般公開してしまうことを防ぐための安全策。
+- **サニタイズ／エスケープ**: `metaKey` は `sanitize_text_field()`、`width` は `absint()` で入力時に正規化。出力時は `href` を `esc_url()`、ラベルを `esc_html()`（ブロック側で装飾書式を許可していないため `wp_kses_post()` ではなく `esc_html()` を採用）、その他の属性値を `esc_attr()` で escape する。`get_block_wrapper_attributes()` の戻り値は WP core 側でエスケープ済みのためそのまま出力する。
+- **型安全性**: `metaKey` / `label` はブロック属性が想定通り文字列であることを `is_string()` で確認してから使用する（`post_content` を直接改変するなど非標準経路で非文字列値が渡されても致命的エラーにしないため）。`get_post_meta()` の戻り値も `is_string()` で確認してから使用する。
+- **CSRF/権限**: 本プラグインは独自の書き込みエンドポイント（REST・AJAX・フォーム送信）を持たない。属性の保存はブロックエディタ標準の投稿保存フロー（WordPress core の REST API による nonce・capability チェック）に委ねており、追加の nonce/capability チェックは不要。
+
 ### 対象外（スコープ外）
 
-PHPUnit・phpcs・composer・GitHub Actions（CI/リリース）・Git初期化は今回のスコープ外（最小構成での実装）。
+wp.org 公開は想定していない（`plugin_repo` カテゴリの Plugin Check は CI で除外）。

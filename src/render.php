@@ -16,15 +16,21 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$meta_key        = isset( $attributes['metaKey'] ) ? sanitize_text_field( $attributes['metaKey'] ) : '';
+$meta_key        = isset( $attributes['metaKey'] ) && is_string( $attributes['metaKey'] ) ? sanitize_text_field( $attributes['metaKey'] ) : '';
 $open_in_new_tab = ! empty( $attributes['openInNewTab'] );
-$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
+$label           = isset( $attributes['label'] ) && is_string( $attributes['label'] ) ? $attributes['label'] : '';
 $width           = isset( $attributes['width'] ) ? absint( $attributes['width'] ) : 0;
 
 // クエリーループの投稿テンプレート内で使われた場合はブロックコンテキストの postId を優先する.
 $target_post_id = isset( $block->context['postId'] ) ? absint( $block->context['postId'] ) : get_the_ID();
 
 if ( '' === $meta_key || ! $target_post_id ) {
+	return;
+}
+
+// アンダースコア始まりなどの保護対象メタは、他のプラグインやコアが内部利用する値である可能性があるため
+// フロントエンドには出力しない.
+if ( is_protected_meta( $meta_key, 'post' ) ) {
 	return;
 }
 
@@ -48,7 +54,7 @@ if ( $width ) {
 		href="<?php echo esc_url( $url ); ?>"
 		<?php echo $open_in_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- 固定文字列のため追加のエスケープは不要. ?>
 	>
-		<?php echo wp_kses_post( $label ); ?>
+		<?php echo esc_html( $label ); ?>
 	</a>
 </div>
 <?php

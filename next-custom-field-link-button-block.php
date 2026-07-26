@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NExT Custom Field Link Button Block
  * Description:       投稿のカスタムフィールド（投稿メタ）の値をリンク先とするボタンブロックを追加します。
- * Version:           0.2.0
+ * Version:           0.2.1
  * Requires at least: 6.1
  * Requires PHP:      7.4
  * Author:            NExT-Season

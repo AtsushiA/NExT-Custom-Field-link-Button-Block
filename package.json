@@ -1,6 +1,6 @@
 {
 	"name": "next-custom-field-link-button-block",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "投稿のカスタムフィールドの値をリンク先とするボタンブロックを追加します。",
 	"author": "NExT-Season",
 	"license": "GPL-2.0-or-later",
