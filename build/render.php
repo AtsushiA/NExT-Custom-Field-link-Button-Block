@@ -17,9 +17,16 @@
 defined( 'ABSPATH' ) || exit;
 
 $meta_key        = isset( $attributes['metaKey'] ) && is_string( $attributes['metaKey'] ) ? sanitize_text_field( $attributes['metaKey'] ) : '';
+$url_prefix      = isset( $attributes['urlPrefix'] ) && is_string( $attributes['urlPrefix'] ) ? $attributes['urlPrefix'] : '';
+$url_suffix      = isset( $attributes['urlSuffix'] ) && is_string( $attributes['urlSuffix'] ) ? $attributes['urlSuffix'] : '';
 $open_in_new_tab = ! empty( $attributes['openInNewTab'] );
 $label           = isset( $attributes['label'] ) && is_string( $attributes['label'] ) ? $attributes['label'] : '';
 $width           = isset( $attributes['width'] ) ? absint( $attributes['width'] ) : 0;
+
+$content_justification = isset( $attributes['contentJustification'] ) && is_string( $attributes['contentJustification'] ) ? $attributes['contentJustification'] : '';
+if ( ! in_array( $content_justification, array( 'left', 'center', 'right' ), true ) ) {
+	$content_justification = '';
+}
 
 // クエリーループの投稿テンプレート内で使われた場合はブロックコンテキストの postId を優先する.
 $target_post_id = isset( $block->context['postId'] ) ? absint( $block->context['postId'] ) : get_the_ID();
@@ -34,11 +41,13 @@ if ( is_protected_meta( $meta_key, 'post' ) ) {
 	return;
 }
 
-$url = get_post_meta( $target_post_id, $meta_key, true );
+$meta_value = get_post_meta( $target_post_id, $meta_key, true );
 
-if ( ! is_string( $url ) || '' === $url ) {
+if ( ! is_string( $meta_value ) || '' === $meta_value ) {
 	return;
 }
+
+$url = $url_prefix . $meta_value . $url_suffix;
 
 // コアの button ブロックと同様、装飾関連のクラス・スタイルはリンク要素側に適用する.
 $link_attributes = get_block_wrapper_attributes( array( 'class' => 'wp-block-button__link' ) );
@@ -47,14 +56,23 @@ $wrapper_class = 'wp-block-button';
 if ( $width ) {
 	$wrapper_class .= sprintf( ' has-custom-width wp-block-button__width-%d', $width );
 }
+
+// コアの buttons ブロックと同じマークアップ・CSSクラスを利用して、
+// ボタン全体の配置（左寄せ・中央寄せ・右寄せ）を制御する.
+$outer_wrapper_class = 'wp-block-buttons';
+if ( $content_justification ) {
+	$outer_wrapper_class .= sprintf( ' is-content-justification-%s', $content_justification );
+}
 ?>
-<div class="<?php echo esc_attr( $wrapper_class ); ?>">
-	<a
-		<?php echo $link_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() はエスケープ済みの属性文字列を返す. ?>
-		href="<?php echo esc_url( $url ); ?>"
-		<?php echo $open_in_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- 固定文字列のため追加のエスケープは不要. ?>
-	>
-		<?php echo esc_html( $label ); ?>
-	</a>
+<div class="<?php echo esc_attr( $outer_wrapper_class ); ?>" style="display:flex;flex-wrap:wrap;">
+	<div class="<?php echo esc_attr( $wrapper_class ); ?>">
+		<a
+			<?php echo $link_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() はエスケープ済みの属性文字列を返す. ?>
+			href="<?php echo esc_url( $url ); ?>"
+			<?php echo $open_in_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- 固定文字列のため追加のエスケープは不要. ?>
+		>
+			<?php echo esc_html( $label ); ?>
+		</a>
+	</div>
 </div>
 <?php
