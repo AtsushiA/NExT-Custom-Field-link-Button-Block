@@ -2,7 +2,7 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "next/custom-field-link-button-block",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "title": "カスタムフィールドリンクボタン",
   "category": "widgets",
   "icon": "admin-links",
@@ -24,6 +24,14 @@
       "type": "string",
       "default": ""
     },
+    "urlPrefix": {
+      "type": "string",
+      "default": ""
+    },
+    "urlSuffix": {
+      "type": "string",
+      "default": ""
+    },
     "openInNewTab": {
       "type": "boolean",
       "default": false
@@ -34,6 +42,14 @@
     },
     "width": {
       "type": "number"
+    },
+    "contentJustification": {
+      "type": "string",
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ]
     },
     "backgroundColor": {
       "type": "string"
@@ -106,7 +122,13 @@
   ],
   "textdomain": "next-custom-field-link-button-block",
   "editorScript": "file:./index.js",
-  "editorStyle": "wp-block-button-editor",
-  "style": "wp-block-button",
+  "editorStyle": [
+    "wp-block-button-editor",
+    "wp-block-buttons-editor"
+  ],
+  "style": [
+    "wp-block-button",
+    "wp-block-buttons"
+  ],
   "render": "file:./render.php"
 }

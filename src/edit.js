@@ -2,6 +2,8 @@ import { __ } from '@wordpress/i18n';
 import {
 	useBlockProps,
 	InspectorControls,
+	BlockControls,
+	JustifyContentControl,
 	RichText,
 } from '@wordpress/block-editor';
 import {
@@ -28,7 +30,15 @@ const WIDTHS = [ 25, 50, 75, 100 ];
  * @return {JSX.Element} 編集画面の要素。
  */
 export default function Edit( { attributes, setAttributes } ) {
-	const { metaKey, openInNewTab, label, width } = attributes;
+	const {
+		metaKey,
+		urlPrefix,
+		urlSuffix,
+		openInNewTab,
+		label,
+		width,
+		contentJustification,
+	} = attributes;
 
 	// コアの button ブロックと同様、装飾関連のスタイル・クラスはリンク要素側に適用する。
 	const blockProps = useBlockProps( {
@@ -42,8 +52,28 @@ export default function Edit( { attributes, setAttributes } ) {
 		.filter( Boolean )
 		.join( ' ' );
 
+	// コアの buttons ブロックと同じマークアップ・CSSクラスを利用して、
+	// ボタン全体の配置（左寄せ・中央寄せ・右寄せ）を制御する。
+	const outerWrapperClassName = [
+		'wp-block-buttons',
+		contentJustification
+			? `is-content-justification-${ contentJustification }`
+			: '',
+	]
+		.filter( Boolean )
+		.join( ' ' );
+
 	return (
 		<>
+			<BlockControls group="block">
+				<JustifyContentControl
+					allowedControls={ [ 'left', 'center', 'right' ] }
+					value={ contentJustification }
+					onChange={ ( value ) =>
+						setAttributes( { contentJustification: value } )
+					}
+				/>
+			</BlockControls>
 			<InspectorControls>
 				<PanelBody
 					title={ __(
@@ -63,6 +93,34 @@ export default function Edit( { attributes, setAttributes } ) {
 						value={ metaKey }
 						onChange={ ( value ) =>
 							setAttributes( { metaKey: value } )
+						}
+					/>
+					<TextControl
+						label={ __(
+							'URLの接頭子',
+							'next-custom-field-link-button-block'
+						) }
+						help={ __(
+							'カスタムフィールドの値の前に付加する文字列を入力してください。',
+							'next-custom-field-link-button-block'
+						) }
+						value={ urlPrefix }
+						onChange={ ( value ) =>
+							setAttributes( { urlPrefix: value } )
+						}
+					/>
+					<TextControl
+						label={ __(
+							'URLの接尾子',
+							'next-custom-field-link-button-block'
+						) }
+						help={ __(
+							'カスタムフィールドの値の後に付加する文字列を入力してください。',
+							'next-custom-field-link-button-block'
+						) }
+						value={ urlSuffix }
+						onChange={ ( value ) =>
+							setAttributes( { urlSuffix: value } )
 						}
 					/>
 					<ToggleControl
@@ -132,20 +190,25 @@ export default function Edit( { attributes, setAttributes } ) {
 					) }
 				</Notice>
 			) }
-			<div className={ wrapperClassName }>
-				<RichText
-					{ ...blockProps }
-					tagName="a"
-					value={ label }
-					onChange={ ( value ) =>
-						setAttributes( { label: value } )
-					}
-					placeholder={ __(
-						'ボタンラベルを入力',
-						'next-custom-field-link-button-block'
-					) }
-					allowedFormats={ [] }
-				/>
+			<div
+				className={ outerWrapperClassName }
+				style={ { display: 'flex', flexWrap: 'wrap' } }
+			>
+				<div className={ wrapperClassName }>
+					<RichText
+						{ ...blockProps }
+						tagName="a"
+						value={ label }
+						onChange={ ( value ) =>
+							setAttributes( { label: value } )
+						}
+						placeholder={ __(
+							'ボタンラベルを入力',
+							'next-custom-field-link-button-block'
+						) }
+						allowedFormats={ [] }
+					/>
+				</div>
 			</div>
 		</>
 	);

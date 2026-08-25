@@ -57,6 +57,62 @@ class RenderTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * contentJustification が指定されている場合、コアの buttons ブロックと同じ配置用クラスが出力されることを確認する.
+	 *
+	 * @return void
+	 */
+	public function test_render_applies_content_justification_class(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'test_link_url', 'https://example.com/target' );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$html = render_block(
+			array(
+				'blockName'    => 'next/custom-field-link-button-block',
+				'attrs'        => array(
+					'metaKey'              => 'test_link_url',
+					'label'                => 'サイトを見る',
+					'contentJustification' => 'center',
+				),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertStringContainsString( 'wp-block-buttons', $html );
+		$this->assertStringContainsString( 'is-content-justification-center', $html );
+	}
+
+	/**
+	 * urlPrefix / urlSuffix が指定されている場合、カスタムフィールドの値の前後に付加されて出力されることを確認する.
+	 *
+	 * @return void
+	 */
+	public function test_render_applies_url_prefix_and_suffix(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'test_link_id', '999999' );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$html = render_block(
+			array(
+				'blockName'    => 'next/custom-field-link-button-block',
+				'attrs'        => array(
+					'metaKey'   => 'test_link_id',
+					'label'     => 'サイトを見る',
+					'urlPrefix' => 'http://google.com?',
+					'urlSuffix' => '?test',
+				),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertStringContainsString( esc_url( 'http://google.com?999999?test' ), $html );
+	}
+
+	/**
 	 * カスタムフィールド名が未指定の場合、何も出力されないことを確認する.
 	 *
 	 * @return void
