@@ -163,9 +163,7 @@ export default function Edit( { attributes, setAttributes } ) {
 								key={ widthValue }
 								size="small"
 								variant={
-									width === widthValue
-										? 'primary'
-										: undefined
+									width === widthValue ? 'primary' : undefined
 								}
 								onClick={ () =>
 									setAttributes( {
