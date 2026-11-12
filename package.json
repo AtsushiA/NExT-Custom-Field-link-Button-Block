@@ -9,7 +9,7 @@
 		"build": "wp-scripts build --webpack-copy-php",
 		"start": "wp-scripts start --webpack-copy-php",
 		"format": "wp-scripts format",
-		"lint:css": "wp-scripts lint-style",
+		"lint:css": "wp-scripts lint-style --allow-empty-input",
 		"lint:js": "wp-scripts lint-js",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"env:start": "wp-env start",
@@ -28,5 +28,8 @@
 		"@wordpress/scripts": "^30.15.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.4.0"
+	},
+	"overrides": {
+		"typescript": "^5.9.3"
 	}
 }
