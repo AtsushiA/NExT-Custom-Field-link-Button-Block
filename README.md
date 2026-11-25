@@ -1,5 +1,7 @@
 # NExT Custom Field Link Button Block
 
+[![Try in WordPress Playground](https://img.shields.io/badge/Try%20in-WordPress%20Playground-3858e9?logo=wordpress)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/AtsushiA/NExT-Custom-Field-link-Button-Block/main/blueprint.json)
+
 投稿のカスタムフィールド（投稿メタ）の値をリンク先とするボタンブロックを追加する WordPress プラグインです。
 
 | 項目 | 内容 |
